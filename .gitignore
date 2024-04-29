@@ -28,7 +28,7 @@ out/
 트
 
 ### 올라갈 필요 없는 것 ###
-.gradle
+gradle/
 settings.gradle
 gradlew
 gradlew.bat
