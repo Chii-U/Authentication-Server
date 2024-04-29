@@ -1,6 +1,7 @@
 package com.example.authenticationserver.config;
 
 import com.example.authenticationserver.JWT.JwtTokenProvider;
+import com.example.authenticationserver.JWT.JwtAuthenticationFilter;
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
