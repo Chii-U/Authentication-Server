@@ -30,3 +30,5 @@ out/
 ### 올라갈 필요 없는 것 ###
 .gradle
 settings.gradle
+gradlew
+gradlew.bat
