@@ -145,7 +145,6 @@ public class JwtTokenProvider {
     public String reGenerateAccessToken(String token) {
         Claims claims = parseClaims(token);
         return doGenerateAccessToken(claims.getSubject(),Map.of("username",claims.getSubject(), "https://chi-iu.com/claims/what-role",claims.get("https://chi-iu.com/claims/what-role")));
-딩
     }
 
     //귀찮으니 액세스토큰이랑 같을 때만들테니까 그냥 액세스토큰재활용식
@@ -187,7 +186,7 @@ public class JwtTokenProvider {
             RefreshToken tokenEntity = tokenService.findByToken(refreshToken);
             long ttl = tokenEntity.getTtl();
             String username = tokenEntity.getUsername();
-            if(tokenService.deleteByToken(refreshToken))
+            if(deleteRefreshToken(refreshToken))
                 System.out.println("not deleted previous refresh token");
 
             String newRT = generateRefreshToken(accessToken, true);
@@ -205,5 +204,6 @@ public class JwtTokenProvider {
 
     // 로그아웃 시 현재 요청이 들어온 리프레시 토큰을 리포에서 삭제한다.
     public boolean deleteRefreshToken(String refreshToken) {
+        return tokenService.deleteByToken(refreshToken);
     }
 }
