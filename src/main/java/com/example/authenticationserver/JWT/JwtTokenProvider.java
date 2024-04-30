@@ -10,7 +10,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import io.jsonwebtoken.security.SecurityException;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -107,7 +106,7 @@ public class JwtTokenProvider {
         Collection<GrantedAuthority> authorities = Arrays.stream(claims.get("https://chi-iu.com/claims/what-role").toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-        UserDetails principal = (UserDetails) new Account((String) claims.get("username"),"",authorities);
+        UserDetails principal = new Account((String) claims.get("username"),"",authorities);
         return new UsernamePasswordAuthenticationToken(principal, "",authorities);
     }
 
