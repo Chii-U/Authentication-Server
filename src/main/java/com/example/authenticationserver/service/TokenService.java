@@ -22,4 +22,8 @@ public class TokenService {
     public boolean save(RefreshToken refreshToken) {
         return refreshRepository.save(refreshToken).equals(refreshToken);
     }
+
+    public boolean existsByToken(String refreshToken) {
+        return refreshRepository.existsByToken(refreshToken);
+    }
 }
