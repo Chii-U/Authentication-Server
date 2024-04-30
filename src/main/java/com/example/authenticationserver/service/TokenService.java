@@ -14,4 +14,12 @@ public class TokenService {
     public RefreshToken findByToken(String refreshToken) {
         return refreshRepository.findByToken(refreshToken).orElseThrow();
     }
+
+    public boolean deleteByToken(String refreshtoken) {
+        return refreshRepository.deleteByToken(refreshtoken);
+    }
+
+    public boolean save(RefreshToken refreshToken) {
+        return refreshRepository.save(refreshToken).equals(refreshToken);
+    }
 }

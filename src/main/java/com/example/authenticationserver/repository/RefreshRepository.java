@@ -11,4 +11,6 @@ public interface RefreshRepository extends CrudRepository<RefreshToken,String> {
     Optional<RefreshToken> findByToken(String token);
     boolean deleteByToken(String token);
     boolean existsByToken(String token);
+
+    RefreshToken save(RefreshToken refreshToken);
 }
