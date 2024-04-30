@@ -60,4 +60,22 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+
+    public boolean validateAccessToken(String token) {
+    }
+
+    public Authentication getAuthentication(String token) {
+    }
+
+    public boolean validateRefreshToken(String refreshToken, String token) {
+    }
+
+    public String reGenerateAccessToken(String token) {
+    }
+
+    public String reGenerateRefreshToken(String token) {
+    }
+
+    public boolean deleteRefreshToken(String refreshToken) {
+    }
 }

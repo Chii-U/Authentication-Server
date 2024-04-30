@@ -31,7 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             //어 근데 너 로그아웃할거야? 그럼 처리해줄게... 만약 만료되거나 이상하거나 에러가 생기면 밑에서 받아서 처리
             if (isLogout) {
-                doLogout(response,parseRefreshToken(request));
+                String RT = parseRefreshToken(request);
+                //검증작업 부터 진행.
+                if(RT != null && jwtTokenProvider.validateRefreshToken(RT,token)) {
+                    doLogout(response, RT);
+                } else{
+                    System.out.println("리프레시 토큰의 정보를 찾을 수 없음.");
+                    throw new IllegalStateException();
+                }
             }
             //토큰 검증하는거 구현 필요, 토큰이 없는지도 확인해서 없는거랑 이상한거랑 같은걸로 처리
             if(token != null && jwtTokenProvider.validateAccessToken(token)) {
@@ -67,6 +74,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .map(Cookie::getValue)
                     .orElseThrow(IllegalStateException::new);
         }
+        return null;
 
     }
 
