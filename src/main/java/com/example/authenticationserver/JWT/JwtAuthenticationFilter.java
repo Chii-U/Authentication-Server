@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if(jwtTokenProvider.validateRefreshToken(refreshToken,token)) {
                     String newAT = jwtTokenProvider.reGenerateAccessToken(token); //있던 인증정보는 맞으니까 그냥 그거가지고 시간 연장이나 해줄게.
                     response.setHeader("Authorization", "Bearer " + newAT);
-                    response.addCookie(new Cookie("REFRESH_TOKEN",jwtTokenProvider.reGenerateRefreshToken(token))); //대체저장용 메서드, RTR방식
+                    response.addCookie(new Cookie("REFRESH_TOKEN",jwtTokenProvider.reGenerateRefreshToken(refreshToken,newAT))); //대체저장용 메서드, RTR방식
                 }
             }
         } catch(Exception e) {

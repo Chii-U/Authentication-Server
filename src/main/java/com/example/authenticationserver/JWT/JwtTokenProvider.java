@@ -143,11 +143,64 @@ public class JwtTokenProvider {
 
     // 액세스토큰을 가지고 인증정보를 빼서 유효기간을 늘리기
     public String reGenerateAccessToken(String token) {
-
+        Claims claims = parseClaims(token);
+        return doGenerateAccessToken(claims.getSubject(),Map.of("username",claims.getSubject(), "https://chi-iu.com/claims/what-role",claims.get("https://chi-iu.com/claims/what-role")));
+딩
     }
 
+    //귀찮으니 액세스토큰이랑 같을 때만들테니까 그냥 액세스토큰재활용식
+    public String generateRefreshToken(String accessToken,boolean reGen) {
+        long now = (new Date()).getTime();
+        long term = 3600 * 10000; // 한 시간 정도... 60초 * 60분 * 1000ms
+        Date refreshTokenExpiresIn = new Date(now + term);
+        // jwt 토큰을 만드는 것!
+        String newRT = Jwts.builder()
+                .setHeaderParam("type","jwt") // 많이들 씀, jwt라는거 알려는 줘야..ㅎ?
+                .setIssuer(domain)
+                .setIssuedAt(new Date())
+                .setClaims(parseClaims(accessToken))
+                .setSubject(parseClaims(accessToken).getSubject())
+                .setExpiration(refreshTokenExpiresIn) //이때 만료
+                .signWith(refreshKey, SignatureAlgorithm.HS256) // 그냥 많이들 사용함
+                .compact();
+
+        //레디스에 저장 리제너레이트인경우에는 리젠 코드에서 실행...
+        if(!reGen) {
+            saveRefreshToken(term, newRT, parseClaims(accessToken).getSubject());
+        }
+        return newRT;
+
+    }
+    private boolean saveRefreshToken(long ttl, String token, String username){
+        RefreshToken refreshToken = RefreshToken.builder()
+                .ttl(ttl)
+                .token(token)
+                .username(username)
+                .build();
+        return tokenService.save(refreshToken);
+    }
+
+
     // rtr 방식을 위해 들어온 리프레시토큰을 대체하기, 특히 Ttl값은 이전 토큰을 파싱하여 가져다 쓴다.
-    public String reGenerateRefreshToken(String token) {
+    public String reGenerateRefreshToken(String refreshToken, String accessToken) {
+        try {
+            RefreshToken tokenEntity = tokenService.findByToken(refreshToken);
+            long ttl = tokenEntity.getTtl();
+            String username = tokenEntity.getUsername();
+            if(tokenService.deleteByToken(refreshToken))
+                System.out.println("not deleted previous refresh token");
+
+            String newRT = generateRefreshToken(accessToken, true);
+
+            if(!saveRefreshToken(ttl, newRT, username))
+                System.out.println("not saved new refresh token");
+
+            return newRT;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     // 로그아웃 시 현재 요청이 들어온 리프레시 토큰을 리포에서 삭제한다.
