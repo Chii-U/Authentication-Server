@@ -1,11 +1,9 @@
 package com.example.authenticationserver.JWT;
 
+import com.example.authenticationserver.entity.Account;
 import com.example.authenticationserver.entity.User;
 import com.example.authenticationserver.repository.UserRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
@@ -13,12 +11,17 @@ import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -87,10 +90,36 @@ public class JwtTokenProvider {
 
     // 들어온 액세스토큰에서 인증정보 빼기
     public Authentication getAuthentication(String token) {
+        //클레임빼는 함수는 따로 구현해야함
+        Claims claims = parseClaims(token);
+
+        if(claims.get("https://chi-iu.com/claims/what-role") == null) {
+            throw new RuntimeException("우리꺼 아니잖아요.");
+        }
+
+        Collection<GrantedAuthority> authorities = Arrays.stream(claims.get("https://chi-iu.com/claims/what-role").toString().split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+        UserDetails principal = (UserDetails) new Account((String) claims.get("username"),"",authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "",authorities);
+    }
+
+    //어떻게든 클레임을 제공함
+    private Claims parseClaims(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
     // 들어온 리프레시토큰이 액세스토큰과 비교했을때 같은 사람껀지, 유효한지.
     public boolean validateRefreshToken(String refreshToken, String token) {
+
     }
 
     // 액세스토큰을 가지고 인증정보를 빼서 유효기간을 늘리기
