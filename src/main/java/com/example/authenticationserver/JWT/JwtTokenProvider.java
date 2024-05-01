@@ -1,6 +1,6 @@
 package com.example.authenticationserver.JWT;
 
-import com.example.authenticationserver.entity.Account;
+
 import com.example.authenticationserver.entity.RefreshToken;
 import com.example.authenticationserver.entity.User;
 import com.example.authenticationserver.service.TokenService;
@@ -11,7 +11,9 @@ import io.jsonwebtoken.security.Keys;
 
 import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,9 +34,10 @@ public class JwtTokenProvider {
     private final Key accessKey;
     private final Key refreshKey;
 
-
-    UserService userService;
-    TokenService tokenService;
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
+    private UserService userService;
 
     // 생성자~ 일단 가장중요한 키 초기화
     public JwtTokenProvider(@Value("${PAINT_JWT_KEY}") String secretKey, @Value("${PAINT_REFRESH_SECRET}") String refreshKey) {
@@ -106,7 +109,7 @@ public class JwtTokenProvider {
         Collection<GrantedAuthority> authorities = Arrays.stream(claims.get("https://chi-iu.com/claims/what-role").toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-        UserDetails principal = new Account((String) claims.get("username"),"",authorities);
+        UserDetails principal = new org.springframework.security.core.userdetails.User((String) claims.get("username"),"",authorities);
         return new UsernamePasswordAuthenticationToken(principal, "",authorities);
     }
 
