@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 안씀 토큰 방식으로
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.GET).permitAll() // 일단 Get메소드는 인증에서 무조건 패스하게
+                        .requestMatchers(HttpMethod.POST,"/api/v1/user/login").permitAll() //로그인은 되야지..
                         .requestMatchers(HttpMethod.POST).hasRole("PATIENT") // 이 서비스의 기본 권한은 환자.
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 프로바이더에서 나온건 허용
                         .anyRequest().authenticated() // 인증 필요
@@ -45,9 +46,9 @@ public class SecurityConfig {
 
     // 패스워드는 들어온다면 인코딩된 상태로 db에 저장되어야 하므로.
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoder() {
         // BCrypt
         BCryptPasswordEncoder pwEncoder = new BCryptPasswordEncoder();
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder(); //{bcrypt}
     }
 }
