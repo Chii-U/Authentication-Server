@@ -1,10 +1,10 @@
 package com.example.authenticationserver.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Builder
-@Data
+@Builder@Setter@Data // DATA Getter / setter 명시 없을 경우 type definition error 가능성
 @AllArgsConstructor
-public record JwtToken (String grantType, String accessToken){}
+public class JwtToken{
+    String grantType;
+    String accessToken;
+}
