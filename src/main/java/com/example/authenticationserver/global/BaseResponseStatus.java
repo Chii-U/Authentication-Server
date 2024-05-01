@@ -14,7 +14,10 @@ public enum BaseResponseStatus {
      * 4000 : Request 오류 채워 넣어야지 이제.
      */
     // Common
-    PASSWORD_NOT_MATCH(false, 4000, "패스워드 틀려");
+    PASSWORD_NOT_MATCH(false, 4000, "패스워드 틀려"),
+    LOGIN_EXPIRED(false,4001, "인증이 만료되었습니다. 다시 로그인해주세요."),
+    USER_NOT_EXISTS(false,4002,"회원 정보가 존재하지 않습니다.");
+
 
 
 
