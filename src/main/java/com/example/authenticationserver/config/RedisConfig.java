@@ -26,7 +26,7 @@ public class RedisConfig {
     @Autowired
     Environment env;
 
-    private final int port = Integer.parseInt(Objects.requireNonNull(env.getProperty("spring.data.redis.port")));
+    private final int port = 6379;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
