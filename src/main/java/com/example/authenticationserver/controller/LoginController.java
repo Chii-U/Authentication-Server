@@ -2,16 +2,15 @@ package com.example.authenticationserver.controller;
 
 import com.example.authenticationserver.dto.IDPWDto;
 import com.example.authenticationserver.dto.JwtToken;
+import com.example.authenticationserver.dto.SignUpDTO;
 import com.example.authenticationserver.global.BaseException;
 import com.example.authenticationserver.global.BaseResponse;
-import com.example.authenticationserver.global.BaseResponseStatus;
 import com.example.authenticationserver.service.LoginService;
 import com.example.authenticationserver.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.authenticationserver.global.BaseResponseStatus.SUCCESS;
@@ -39,6 +38,15 @@ public class LoginController {
         userService.logout(request,response);
         return new BaseResponse<>(SUCCESS);
     }
+
+    @PostMapping("/signup")
+    public BaseResponse<Void> signup(
+            @RequestBody SignUpDTO signUpDTO
+    ) {
+        userService.signup(signUpDTO);
+        return new BaseResponse<>(SUCCESS);
+    }
+
     @GetMapping("/test")
     public BaseResponse<Void> test(){
         userService.test();
