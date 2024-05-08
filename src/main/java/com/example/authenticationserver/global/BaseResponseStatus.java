@@ -16,7 +16,8 @@ public enum BaseResponseStatus {
     // Common
     PASSWORD_NOT_MATCH(false, 4000, "패스워드 틀려"),
     LOGIN_EXPIRED(false,4001, "인증이 만료되었습니다. 다시 로그인해주세요."),
-    USER_NOT_EXISTS(false,4002,"회원 정보가 존재하지 않습니다.");
+    USER_NOT_EXISTS(false,4002,"회원 정보가 존재하지 않습니다."),
+    EXISTS_USERNAME(false, 4003, "이미 존재하는 회원 정보입니다.");
 
 
 

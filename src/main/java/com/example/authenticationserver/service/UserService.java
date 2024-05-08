@@ -3,10 +3,12 @@ package com.example.authenticationserver.service;
 import com.example.authenticationserver.JWT.JwtTokenProvider;
 import com.example.authenticationserver.dto.IDPWDto;
 import com.example.authenticationserver.dto.JwtToken;
+import com.example.authenticationserver.dto.SignUpDTO;
 import com.example.authenticationserver.entity.User;
 import com.example.authenticationserver.enumerated.Authority;
 import com.example.authenticationserver.global.BaseException;
 import com.example.authenticationserver.global.BaseResponse;
+import com.example.authenticationserver.global.BaseResponseStatus;
 import com.example.authenticationserver.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,8 +35,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import static com.example.authenticationserver.global.BaseResponseStatus.LOGIN_EXPIRED;
-import static com.example.authenticationserver.global.BaseResponseStatus.PASSWORD_NOT_MATCH;
+import static com.example.authenticationserver.global.BaseResponseStatus.*;
 
 @Service@Slf4j@RequiredArgsConstructor
 public class UserService{
@@ -83,5 +84,24 @@ public class UserService{
         response.addCookie(new Cookie("REFRESH_TOKEN","") {{
             setPath("/");
         }});
+    }
+
+    public void signup(SignUpDTO signUpDTO) throws BaseException {
+        if(userRepository.existsById(signUpDTO.username()) || userRepository.existsByEmail(signUpDTO.email())) {
+            throw new BaseException(EXISTS_USERNAME);
+        }
+        User user = userRepository.save(User.builder()
+                .username(signUpDTO.username())
+                .password(signUpDTO.password())
+                .realName(signUpDTO.real_name())
+                .gender(signUpDTO.gender())
+                .email(signUpDTO.email())
+                .isEnabled(false)
+                .authority(Authority.ROLE_PATIENT)
+                .isAccountNonLocked(true)
+                .birthday(signUpDTO.birthday())
+                .joinDate(LocalDateTime.now())
+                .build()
+        );
     }
 }

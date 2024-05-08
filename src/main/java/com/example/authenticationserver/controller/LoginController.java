@@ -42,7 +42,7 @@ public class LoginController {
     @PostMapping("/signup")
     public BaseResponse<Void> signup(
             @RequestBody SignUpDTO signUpDTO
-    ) {
+    ) throws BaseException {
         userService.signup(signUpDTO);
         return new BaseResponse<>(SUCCESS);
     }
