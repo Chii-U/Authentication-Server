@@ -26,6 +26,8 @@ public class User {
     @DateTimeFormat
     LocalDate birthday;
     boolean gender;
+    @Field(name = "agree_marketing")
+    boolean agreeMarketing;
     @Field(name = "join_date")
     LocalDateTime joinDate;
 
