@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.Update;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,9 @@ public class UserService{
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
 
     @Autowired
     private final PasswordEncoder passwordEncoder;
@@ -76,15 +81,24 @@ public class UserService{
         User user = userRepository.save(User.builder()
                 .username(signUpDTO.username())
                 .password(signUpDTO.password())
-                .realName(signUpDTO.real_name())
+                .realName(signUpDTO.realName())
                 .gender(signUpDTO.gender())
                 .email(signUpDTO.email())
+                .birthday(signUpDTO.birthday())
+                .agreeMarketing(signUpDTO.agreeMarketing())
                 .isEnabled(false)
                 .authority(Authority.ROLE_PATIENT)
                 .isAccountNonLocked(true)
-                .birthday(signUpDTO.birthday())
                 .joinDate(LocalDateTime.now())
                 .build()
         );
     }
+
+    public void dropout(String username) {
+        //soft
+        userRepository.disableByUsername(username);
+        userRepository.lockByUsername(username);
+
+    }
+
 }
