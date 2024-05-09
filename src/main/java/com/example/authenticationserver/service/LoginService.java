@@ -70,4 +70,8 @@ public class LoginService implements UserDetailsService {
             throw new BaseException(PASSWORD_NOT_MATCH);
         }
     }
+
+    public boolean matchPassword(String password, String enPassword) {
+        return passwordEncoder.matches(password,enPassword);
+    }
 }
