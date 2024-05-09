@@ -8,6 +8,7 @@ public enum BaseResponseStatus {
      * 2000 : 요청 성공
      */
     SUCCESS(true, 2000, "요청에 성공하였습니다."),
+    DUPLICATION(false, 2001, "중복이 있습니다"),
 
 
     /**

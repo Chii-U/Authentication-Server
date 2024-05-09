@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-import static com.example.authenticationserver.global.BaseResponseStatus.PASSWORD_NOT_MATCH;
-import static com.example.authenticationserver.global.BaseResponseStatus.SUCCESS;
+import static com.example.authenticationserver.global.BaseResponseStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -69,7 +68,22 @@ public class LoginController {
     // 취약해 보인다.
     @PostMapping("id-dup")
     public BaseResponse<Void> idDupCheck(
+            @RequestBody Map<String,String> data
     ){
+        //all 유저
+        if(userService.existsByUsername(data.get("username"))){
+            return new BaseResponse<Void>(DUPLICATION);
+        }
+        return new BaseResponse<Void>(SUCCESS);
+    }
+    @PostMapping("email-dup")
+    public BaseResponse<Void> emailDupCheck(
+            @RequestBody Map<String,String> data
+    ){
+        //all 유저
+        if(userService.existsByEmail(data.get("email"))){
+            return new BaseResponse<Void>(DUPLICATION);
+        }
         return new BaseResponse<Void>(SUCCESS);
     }
 
