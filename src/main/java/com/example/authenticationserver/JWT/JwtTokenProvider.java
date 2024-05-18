@@ -152,8 +152,8 @@ public class JwtTokenProvider {
     //귀찮으니 액세스토큰이랑 같을 때만들테니까 그냥 액세스토큰재활용식
     public String generateRefreshToken(String accessToken,boolean reGen) {
         long now = (new Date()).getTime();
-        long term = 3600 * 10000; // 한 시간 정도... 60초 * 60분 * 1000ms
-        Date refreshTokenExpiresIn = new Date(now + term);
+        long term = 3600; // 한 시간 정도... 60초 * 60분 * 1000ms
+        Date refreshTokenExpiresIn = new Date(now + term*1000);
         // jwt 토큰을 만드는 것!
         String newRT = Jwts.builder()
                 .setHeaderParam("type","jwt") // 많이들 씀, jwt라는거 알려는 줘야..ㅎ?
