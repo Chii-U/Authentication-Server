@@ -3,10 +3,9 @@ package com.example.authenticationserver.service;
 import com.example.authenticationserver.JWT.JwtTokenProvider;
 import com.example.authenticationserver.dto.IDPWDto;
 import com.example.authenticationserver.dto.JwtToken;
-import com.example.authenticationserver.dto.SignUpDTO;
+import com.example.authenticationserver.entity.Account;
 import com.example.authenticationserver.entity.User;
 import com.example.authenticationserver.global.BaseException;
-import com.example.authenticationserver.global.BaseResponseStatus;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -20,6 +19,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +38,9 @@ public class LoginService implements UserDetailsService {
     private UserService userService;
 
     @Override @Transactional
-    public UserDetails loadUserByUsername(String username) {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException  {
         User user = userService.findByUsernameAndIsEnabledTrue(username);
-        return new org.springframework.security.core.userdetails.User(username, user.getPassword(), List.of(new SimpleGrantedAuthority(user.getAuthority().name())));
+        return (UserDetails) new Account(username, user.getPassword(), List.of(new SimpleGrantedAuthority(user.getAuthority().name())));
     }
 
     @Autowired
@@ -58,15 +58,15 @@ public class LoginService implements UserDetailsService {
         try{
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
             String accessToken = jwtTokenProvider.generateAccessToken(authentication);
-
-            response.addCookie(new Cookie("REFRESH_TOKEN",jwtTokenProvider.generateRefreshToken(accessToken,false)){{ setMaxAge(3600); setPath("/"); }});
+            String refreshToken = jwtTokenProvider.generateRefreshToken(accessToken,false);
+            response.addCookie(new Cookie("REFRESH_TOKEN",refreshToken){{ setMaxAge(3600); setPath("/"); }});
 
             return JwtToken.builder()
                     .accessToken(accessToken)
                     .grantType("Bearer")
+                    .refreshToken(refreshToken)
                     .build();
         } catch (AuthenticationException | NoSuchElementException e) {
-            System.out.println(e.getMessage());
             throw new BaseException(PASSWORD_NOT_MATCH);
         }
     }
