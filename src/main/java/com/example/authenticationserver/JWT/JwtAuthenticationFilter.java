@@ -1,14 +1,11 @@
 package com.example.authenticationserver.JWT;
 
-import com.example.authenticationserver.JWT.JwtTokenProvider;
 import com.example.authenticationserver.global.BaseException;
 import com.example.authenticationserver.global.BaseResponse;
 import com.example.authenticationserver.global.BaseResponseStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +19,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.EmptyStackException;
 
 import static com.example.authenticationserver.global.BaseResponseStatus.LOGIN_EXPIRED;
 import static com.example.authenticationserver.global.BaseResponseStatus.USER_NOT_EXISTS;
@@ -67,7 +63,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     if (jwtTokenProvider.validateRefreshToken(refreshToken, token)) {
                         String newAT = jwtTokenProvider.reGenerateAccessToken(token); //있던 인증정보는 맞으니까 그냥 그거가지고 시간 연장이나 해줄게.
                         response.setHeader("Authorization", "Bearer " + newAT);
-                        response.addCookie(new Cookie("REFRESH_TOKEN", jwtTokenProvider.reGenerateRefreshToken(refreshToken, newAT))); //대체저장용 메서드, RTR방식
+                        response.addCookie(new Cookie("REFRESH_TOKEN", jwtTokenProvider.reGenerateRefreshToken(refreshToken, newAT)) {{setPath("/");}}); //대체저장용 메서드, RTR방식
+                        setErrorResponse(response, LOGIN_EXPIRED);
                     }
                 }
             } catch (BaseException e) {
@@ -82,7 +79,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String parseRefreshToken(HttpServletRequest request) throws BaseException {
         if(request.getCookies() != null) {
             return Arrays.stream(request.getCookies())
-                    .filter(cookie -> cookie.getName().equals("REFRESH_TOKEN") && cookie.getPath().equals("/"))
+                    .filter(cookie -> cookie.getName().equals("REFRESH_TOKEN"))
                     .findFirst()
                     .map(Cookie::getValue)
                     .orElseThrow(()->new BaseException(LOGIN_EXPIRED));
