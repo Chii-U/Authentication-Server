@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity//(debug=true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -26,16 +26,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        System.out.println("=====인증 서버 정상 실행중, 서버 버전 0.0.2 =====");
+        System.out.println("=====인증 서버 정상 실행중, 서버 버전 0.0.2 수정 =====");
 
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .oauth2Login(
+                        httpSecurityOAuth2LoginConfigurer ->
+                                httpSecurityOAuth2LoginConfigurer.defaultSuccessUrl("http://localhost:8060/api/v1/users/oauth2/success"))
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 안씀 토큰 방식으로
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.GET).permitAll() // 일단 Get메소드는 인증에서 무조건 패스하게
-                        .requestMatchers(HttpMethod.POST,"/api/v1/users/login").permitAll() //로그인은 되야지..
-                        .requestMatchers(HttpMethod.POST).hasRole("PATIENT") // 이 서비스의 기본 권한은 환자.
+                        .requestMatchers(HttpMethod.POST,"/api/v1/users/**").permitAll() //일단은 전부 되게끔
+                        .requestMatchers(HttpMethod.POST).hasRole("PATIENT")
+                        .requestMatchers(HttpMethod.GET,"api/v1/users/logout").hasRole("PATIENT")// 이 서비스의 기본 권한은 환자.
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 프로바이더에서 나온건 허용
                         .anyRequest().authenticated() // 인증 필요
                 )
