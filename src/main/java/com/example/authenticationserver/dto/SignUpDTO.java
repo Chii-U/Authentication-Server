@@ -2,5 +2,5 @@ package com.example.authenticationserver.dto;
 
 import java.time.LocalDate;
 
-public record SignUpDTO(String username, String password, String realName, String email, boolean gender, LocalDate birthday, boolean agreeMarketing) {
+public record SignUpDTO(String username, String password, String realName, String email, Boolean gender, LocalDate birthday, boolean agreeMarketing) {
 }
