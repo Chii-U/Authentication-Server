@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisKeyValueAdapter;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.convert.KeyspaceConfiguration;
 import org.springframework.data.redis.core.convert.MappingConfiguration;
@@ -20,7 +21,7 @@ import java.util.Collections;
 import java.util.Objects;
 
 @Configuration
-@EnableRedisRepositories(indexConfiguration = RedisConfig.PaintIndexConfig.class)
+@EnableRedisRepositories(indexConfiguration = RedisConfig.PaintIndexConfig.class,enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
 public class RedisConfig {
 
     @Autowired
