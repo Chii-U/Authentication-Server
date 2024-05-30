@@ -1,6 +1,7 @@
 package com.example.authenticationserver.JWT;
 
 
+import com.example.authenticationserver.entity.Account;
 import com.example.authenticationserver.entity.RefreshToken;
 import com.example.authenticationserver.entity.User;
 import com.example.authenticationserver.service.TokenService;
@@ -41,6 +42,7 @@ public class JwtTokenProvider {
 
     // 생성자~ 일단 가장중요한 키 초기화
     public JwtTokenProvider(@Value("${PAINT_JWT_KEY}") String secretKey, @Value("${PAINT_REFRESH_SECRET}") String refreshKey) {
+        System.out.println(secretKey);
         byte[] secret = Decoders.BASE64.decode(secretKey);
         this.accessKey = Keys.hmacShaKeyFor(secret);
         byte[] secret2 = Decoders.BASE64.decode(refreshKey);
@@ -62,7 +64,10 @@ public class JwtTokenProvider {
     //
     private String doGenerateAccessToken(String username, Map<String, Object> claims) {
         long now = (new Date()).getTime();
-        Date acessTokenExpiresIn = new Date(now + 240000); // 4분정도... 60초 * 4분 * 1000ms
+        Date acessTokenExpiresIn = new Date(now + (240000 * 15 * 24)); // 4분정도... 60초 * 4분 * 1000ms
+        /** 4분에서 24시간으로 늘림 **/
+
+
         // jwt 토큰을 만드는 것!
         return Jwts.builder()
                 .setHeaderParam("type","jwt") // 많이들 씀, jwt라는거 알려는 줘야..ㅎ?
@@ -92,7 +97,12 @@ public class JwtTokenProvider {
         } catch (UnsupportedJwtException e) {
             System.out.println("내 사이트에서 만들어진 건 아닌듯");
         } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
             System.out.println("클레임 뭔데?");
+        } catch (ExpiredJwtException e) {
+            throw e;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         return false;
     }
@@ -109,7 +119,7 @@ public class JwtTokenProvider {
         Collection<GrantedAuthority> authorities = Arrays.stream(claims.get("https://chi-iu.com/claims/what-role").toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-        UserDetails principal = new org.springframework.security.core.userdetails.User((String) claims.get("username"),"",authorities);
+        UserDetails principal = (UserDetails) new Account(claims.getSubject(),"",authorities);
         return new UsernamePasswordAuthenticationToken(principal, "",authorities);
     }
 
@@ -152,7 +162,8 @@ public class JwtTokenProvider {
     //귀찮으니 액세스토큰이랑 같을 때만들테니까 그냥 액세스토큰재활용식
     public String generateRefreshToken(String accessToken,boolean reGen) {
         long now = (new Date()).getTime();
-        long term = 3600; // 한 시간 정도... 60초 * 60분 * 1000ms
+        long term = 3600 * 24 * 14; // 한 시간 정도... 60초 * 60분 * 1000ms
+        /**     한시간 이었다가 테스트 좀 끝나서 2주로 늘림    **/
         Date refreshTokenExpiresIn = new Date(now + term*1000);
         // jwt 토큰을 만드는 것!
         String newRT = Jwts.builder()
