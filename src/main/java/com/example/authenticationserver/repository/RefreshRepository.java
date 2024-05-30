@@ -9,8 +9,8 @@ import java.util.Optional;
 @Repository //이거 레디스 접근하는 리포임.
 public interface RefreshRepository extends CrudRepository<RefreshToken,String> {
     Optional<RefreshToken> findByToken(String token);
-    boolean deleteByToken(String token);
-    boolean existsByToken(String token);
+    Boolean deleteByToken(String token);
+    Boolean existsByToken(String token);
 
     RefreshToken save(RefreshToken refreshToken);
 }
