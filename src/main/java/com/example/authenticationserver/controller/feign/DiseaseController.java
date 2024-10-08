@@ -20,13 +20,13 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/disease")
 public class DiseaseController {
 
     @Autowired
     private DiseaseClient diseaseClient;
     
-    @PostMapping("/disease")
+    @PostMapping("")
     public BaseResponse<Object> predictDisease(
             @AuthenticationPrincipal Account account,
             DiseaseRequestDto dto // DTO로 변경하여 요청 본문에서 사용자 이름과 질병 정보를 받음
@@ -43,7 +43,7 @@ public class DiseaseController {
         return new BaseResponse<>(response);
     }
 
-    @GetMapping("/disease")
+    @GetMapping("")
     public BaseResponse<Object> getDisease(
             @AuthenticationPrincipal Account account, // 인증된 사용자
             @RequestBody Map<String, String> requestBody // 요청 본문에서 JSON을 받을 수 있도록 설정

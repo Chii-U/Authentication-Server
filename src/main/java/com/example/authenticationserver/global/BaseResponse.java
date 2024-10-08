@@ -5,17 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor  // 기본 생성자 추가
 @JsonPropertyOrder({"isSuccess", "code", "message", "result"})
 public class BaseResponse<T> {
     @JsonProperty("isSuccess")
-    private final Boolean isSuccess;
-    private final String message;
-    private final int code;
+    private Boolean isSuccess;
+    private String message;
+    private int code;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T result;
 

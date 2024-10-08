@@ -3,6 +3,7 @@ package com.example.authenticationserver.client;
 import com.example.authenticationserver.config.MultiPartConfig;
 import com.example.authenticationserver.dto.PainRecordDto;
 import com.example.authenticationserver.dto.VideoDto;
+import com.example.authenticationserver.global.BaseResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,13 +19,13 @@ public interface HomeClient {
 
     // 특정 날짜의 통증 기록 조회
     @GetMapping("/home/{username}/date")
-    List<PainRecordDto> getPainRecordByDate(@PathVariable String username, @RequestParam("painDate") LocalDate painDate);
+    BaseResponse<List<PainRecordDto>> getPainRecordByDate(@PathVariable("username") String username, @RequestParam("painDate") LocalDate painDate);
 
     // 특정 질병명에 따른 운동 비디오 조회
     @GetMapping("/home/exercise/{username}/{diseaseName}")
-    List<VideoDto> getExerciseByDiseaseName(@PathVariable("username") String username, @PathVariable("diseaseName") String diseaseName);
+    BaseResponse<List<VideoDto>> getExerciseByDiseaseName(@PathVariable("username") String username, @PathVariable("diseaseName") String diseaseName);
 
     // 제외시킬 운동 목록 조회
     @GetMapping("/home/{username}/excludedExercise")
-    List<String> getExcludedExercise(@PathVariable String username);
+    BaseResponse<List<String>> getExcludedExercise(@PathVariable("username") String username);
 }
