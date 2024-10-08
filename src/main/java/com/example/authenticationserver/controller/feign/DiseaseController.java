@@ -8,26 +8,19 @@ import com.example.authenticationserver.global.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.example.authenticationserver.global.BaseResponseStatus.LOGIN_FIRST;
 
-import java.util.Map;
-
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/disease")
 public class DiseaseController {
 
     @Autowired
     private DiseaseClient diseaseClient;
 
-    @PostMapping("/disease")
+    @PostMapping("")
     public BaseResponse<Object> predictDisease(
             @AuthenticationPrincipal Account account,
             @RequestBody DiseaseRequestDto dto // DTO로 요청 본문 받기
@@ -44,7 +37,7 @@ public class DiseaseController {
         return new BaseResponse<>(response);
     }
 
-    @GetMapping("/disease")
+    @GetMapping("")
     public BaseResponse<Object> getDisease(
             @AuthenticationPrincipal Account account, // 인증된 사용자
             @RequestParam("username") String username // @RequestParam으로 사용자 이름 받기

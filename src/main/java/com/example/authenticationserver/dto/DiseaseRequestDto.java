@@ -1,13 +1,11 @@
 package com.example.authenticationserver.dto;
 
-import lombok.*; 
+import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class DiseaseRequestDto {
-    String username;
-    String disease;
+    private String username;
+    private String disease;
 }

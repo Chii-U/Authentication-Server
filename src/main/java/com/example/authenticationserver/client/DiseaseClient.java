@@ -13,11 +13,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public interface DiseaseClient {
 
     @PostMapping(value = "/disease", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    Object predictDisease(
-            @RequestBody DiseaseRequestDto req);
+    Object predictDisease(@RequestBody DiseaseRequestDto req);
 
-    // GET 메서드 추가
     @GetMapping(value = "/disease", produces = APPLICATION_JSON_VALUE)
-    Object getDisease(
-            @RequestParam("username") String username);
+    Object getDisease(@RequestParam("username") String username);
 }
