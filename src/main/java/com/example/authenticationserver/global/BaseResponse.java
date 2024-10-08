@@ -6,15 +6,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static com.example.authenticationserver.global.BaseResponseStatus.SUCCESS;
-
 import java.util.List;
-
 
 @Getter
 @AllArgsConstructor
 @JsonPropertyOrder({"isSuccess", "code", "message", "result"})
-public class BaseResponse<T> {//BaseResponse 객체를 사용할때 성공, 실패 경우
+public class BaseResponse<T> {
     @JsonProperty("isSuccess")
     private final Boolean isSuccess;
     private final String message;
@@ -24,18 +21,10 @@ public class BaseResponse<T> {//BaseResponse 객체를 사용할때 성공, 실�
 
     // 요청에 성공한 경우
     public BaseResponse(T result) {
-        this.isSuccess = SUCCESS.isSuccess();
-        this.message = SUCCESS.getMessage();
-        this.code = SUCCESS.getCode();
+        this.isSuccess = true;
+        this.message = "요청에 성공하였습니다.";
+        this.code = 2000;
         this.result = result;
-    }
-
-    //요청에 성공하고, list인 경우
-    public BaseResponse(List<T> results) {
-        this.isSuccess = SUCCESS.isSuccess();
-        this.message = SUCCESS.getMessage();
-        this.code = SUCCESS.getCode();
-        this.result = (T) results.toArray();
     }
 
     // 요청에 실패한 경우

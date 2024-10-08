@@ -23,8 +23,8 @@ jib {
         }
     }
     to {
-        image = "shinyenggwak/paint-auth"
-        tags = ["test-0.1.9"]
+        image = "hyezis/paint-auth"
+        tags = ["0.2.4"]
     }
 }
 

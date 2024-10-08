@@ -24,7 +24,6 @@ public class RecordController {
     public BaseResponse<Object> getAllPainRecords(@AuthenticationPrincipal Account account) {
         Map<String,Object> res = recordClient.getAllPainRecords(account.getUsername());
         return new BaseResponse<Object>(res.getOrDefault("data","nodata"));
-
     }
 
     // 특정 날짜의 통증 기록 조회

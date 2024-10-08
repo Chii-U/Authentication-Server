@@ -1,6 +1,5 @@
 package com.example.authenticationserver.client;
 
-
 import com.example.authenticationserver.config.MultiPartConfig;
 import com.example.authenticationserver.dto.UsernameDto;
 import org.springframework.beans.factory.annotation.Qualifier;

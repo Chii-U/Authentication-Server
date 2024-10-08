@@ -12,7 +12,7 @@ import java.util.List;
 public class PainRecordDto {
     private String id;
     private String username;
-    private String location;
+    private List<String> location;
     private String trigger;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
