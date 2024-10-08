@@ -39,7 +39,7 @@ public class HomeController {
     }
 
     // 특정 질병명에 따른 운동 비디오 조회
-    @GetMapping("/exercise/{diseaseName}")
+    @GetMapping("/exercise/{username}/{diseaseName}")
     public BaseResponse<List<VideoDto>> getExerciseByDiseaseName(@AuthenticationPrincipal Account account, @PathVariable("diseaseName") String diseaseName) {
         if (account == null) {
             return new BaseResponse<>(BaseResponseStatus.LOGIN_FIRST);  // 인증되지 않은 경우 처리
@@ -58,13 +58,13 @@ public class HomeController {
     }
 
     // 제외시킬 운동 목록 조회
-    @GetMapping("/excludedExercise")
-    public BaseResponse<List<String>> getExcludedExercise(@AuthenticationPrincipal Account account) {
-        if (account == null) {
+    @GetMapping("/{username}/excludedExercise")
+    public BaseResponse<List<String>> getExcludedExercise(@PathVariable("username") String username) {
+        if (username == null) {
             return new BaseResponse<>(BaseResponseStatus.LOGIN_FIRST);  // 인증되지 않은 경우 처리
         }
         try {
-            BaseResponse<List<String>> excludedExercises = homeClient.getExcludedExercise(account.getUsername());
+            BaseResponse<List<String>> excludedExercises = homeClient.getExcludedExercise(username);
             if (excludedExercises.getResult() != null && !excludedExercises.getResult().isEmpty()) {
                 return excludedExercises;  // 성공적으로 제외 운동 목록 반환
             } else {

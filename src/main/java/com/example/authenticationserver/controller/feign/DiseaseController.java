@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.example.authenticationserver.global.BaseResponseStatus.LOGIN_FIRST;
@@ -20,16 +21,16 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/disease")
+@RequestMapping("/api/v1")
 public class DiseaseController {
 
     @Autowired
     private DiseaseClient diseaseClient;
-    
-    @PostMapping("")
+
+    @PostMapping("/disease")
     public BaseResponse<Object> predictDisease(
             @AuthenticationPrincipal Account account,
-            DiseaseRequestDto dto // DTO로 변경하여 요청 본문에서 사용자 이름과 질병 정보를 받음
+            @RequestBody DiseaseRequestDto dto // DTO로 요청 본문 받기
     ) throws BaseException {
         if (account == null) {
             throw new BaseException(LOGIN_FIRST);
@@ -43,16 +44,14 @@ public class DiseaseController {
         return new BaseResponse<>(response);
     }
 
-    @GetMapping("")
+    @GetMapping("/disease")
     public BaseResponse<Object> getDisease(
             @AuthenticationPrincipal Account account, // 인증된 사용자
-            @RequestBody Map<String, String> requestBody // 요청 본문에서 JSON을 받을 수 있도록 설정
+            @RequestParam("username") String username // @RequestParam으로 사용자 이름 받기
     ) throws BaseException {
         if (account == null) {
             throw new BaseException(LOGIN_FIRST); // 인증되지 않은 사용자 처리
         }
-
-        String username = requestBody.get("username"); // 요청 본문에서 사용자 이름 가져오기
 
         // 외부 API 호출
         Object response = diseaseClient.getDisease(username);
