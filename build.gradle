@@ -24,7 +24,7 @@ jib {
     }
     to {
         image = "hyezis/paint-auth"
-        tags = ["0.2.4"]
+        tags = ["0.2.5"]
     }
 }
 

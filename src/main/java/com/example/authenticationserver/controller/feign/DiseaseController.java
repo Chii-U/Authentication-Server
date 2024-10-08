@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/ai")
+@RequestMapping("/api/v1")
 public class DiseaseController {
 
     @Autowired
