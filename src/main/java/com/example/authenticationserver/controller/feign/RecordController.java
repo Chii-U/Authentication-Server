@@ -51,7 +51,7 @@ public class RecordController {
 
     // 통증 기록 삭제
     // sy : 누구든 id를 안다면 해당 기록을 삭제할 수 있는 취약성이 있을 것 같다.
-    // 일단 로그인ㄴ되지 않은 유저는 처리못하게 1차방어
+    // 일단 로그인되지 않은 유저는 처리못하게 1차방어
     @PostMapping("/delete/{id}")
     public BaseResponse<Object> deletePainRecord(@AuthenticationPrincipal Account account,@PathVariable String id) throws BaseException {
         if(account == null) {
